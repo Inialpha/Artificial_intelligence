@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cp imaze.png /sdcard/Download/src0/src0/imaze.png
+cp maze.png /sdcard/Download/src0/src0/maze.png
