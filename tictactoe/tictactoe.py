@@ -3,6 +3,7 @@ Tic Tac Toe Player
 """
 
 import math
+import copy
 
 X = "X"
 O = "O"
@@ -38,22 +39,23 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    actions = []
+    my_actions = []
     for i in range(len(board)):
         for j in range(len(board)):
             if board[i][j] == EMPTY:
-                actions.append(board[i][j])
-    return actions
+                my_actions.append((i, j))
+    return my_actions
 
 
 def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
+    print(action)
     row, col = action
     if board[row][col] != EMPTY:
         raise Exception
-    b = board.deepcopy()
+    b = copy.deepcopy(board)
     try:
         b[row][col] = player(board)
     except IndexError:
@@ -105,7 +107,7 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    if utility(board) is not None:
+    if winner(board) :
         return True
 
     for i in range(len(board)):
@@ -120,28 +122,69 @@ def utility(board):
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
 
-    if utility(board) == X:
+    if winner(board) == X:
         return 1
-    if utility(board) == O:
+    elif winner(board) == O:
         return -1
     return 0
+
+def max_value(board):
+    """
+    Returns the value of the maximum move for the maximizing player.
+    """
+    if terminal(board):
+        return utility(board)
+
+    new_actions = actions(board)
+    val = float("-inf")
+    for action in new_actions:
+        new_board = result(board, action)
+        val = max(val, min_value(new_board))
+    return val
+
+def min_value(board):
+    """
+    Returns the value of the minimum move for the minimizing player.
+    """
+    if terminal(board):
+        return utility(board)
+
+    new_actions = actions(board)
+    val = float("inf")
+    for action in new_actions:
+        new_board = result(board, action)
+        val = min(val, max_value(new_board))
+    return val
 
 
 def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    if terminal(board):
-        return utility(board)
+    if player(board) == "O": 
+        my_actions = actions(board)
+        min_val = float('inf')
+        best_move = None
+        for action in my_actions:
+            new_board = result(board, action)
+            val = max_value(new_board)
+            if val < min_val:
+                min_val = val
+                best_move = action 
+        return best_move
 
-    actions = actions(board)
-    min_val = float('inf')
-    for actions in actions:
-        board = result(action, board)
-        val = minimax(board)
-        r, c = action
-        board[r][c] = EMPTY
-        min_val = min(min_val, val)
-    return min_val
+    if player(board) == "X":
+        my_actions = actions(board)
+        max_val = float('-inf')
+        best_move = None
+        for action in my_actions:
+            new_board = result(board, action)
+            val = min_value(new_board)
+            if val > max_val:
+                max_val = val
+                best_move = action
+        return best_move
+
+
 
 
