@@ -51,7 +51,6 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    print(action)
     row, col = action
     if board[row][col] != EMPTY:
         raise Exception
@@ -67,38 +66,17 @@ def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    i = 0
-    j = 0
+    board_len = len(board[0])
     for player in [X, O]:
-        if board[i][j] == player and board[i][j + 1] == player and board[i][j + 2] == player:
-            return player
+        for i in range(len(board)):
+            if all(col == player for col in board[i]):
+                return player
 
-        if board[i + 1][j] == player and board[i + 1][j + 1] == player and board[i + 1][j + 2] == player:
-            return player
+            if all(board[j][i] == player for j in range(board_len)):
+                return player
 
-        if board[i + 2][j] == player and board[i + 2][j + 1] == player and board[i + 2][j + 2] == player:
-            return player
-
-        # check horizontal
-        # colum 0
-        if board[i][j] == player and board[i + 1][j] == player and board[i + 2][j] == player:
-            return player
-
-        # colum 1
-        if board[i][j + 1] == player and board[i + 1][j + 1] == player and board[i + 2][j + 1] == player:
-            return player
-        
-        # colum 2
-
-        if board[i][j + 2] == player and board[i + 1][j + 2] == player and board[i + 2][j + 2] == player:
-            return player
-
-        # check diagonals
-        if board[i][j] == player and board[i + 1][j + 1] == player and board[i + 2][j + 2] == player:
-            return player
-
-        if board[i][j + 2] == player and board[i + 1][j + 1] == player and board[i + 2][j] == player:
-            return player
+        if all(board[i][i] == player for i in range(board_len)) or all(board[i][(board_len -1) - i] == player for i in range(board_len)):
+                return player
 
     return None
 
@@ -184,7 +162,3 @@ def minimax(board):
                 max_val = val
                 best_move = action
         return best_move
-
-
-
-
