@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cp  queuefrontier.png /sdcard/Download/src0/src0/queuefrontier.png
+
+cp stackfrontier.png /sdcard/Download/src0/src0/stackfrontier.png
+
+cp heuristicfrontier.png /sdcard/Download/src0/src0/heuristicfrontier.png
